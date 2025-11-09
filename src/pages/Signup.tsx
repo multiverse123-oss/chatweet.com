@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const Signup = () => {
@@ -14,6 +15,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,17 +31,22 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    // TODO: Implement actual authentication with Lovable Cloud
-    setTimeout(() => {
-      if (email && password) {
-        toast({
-          title: "Account created!",
-          description: "Welcome to ChatWeet. Please log in.",
-        });
-        navigate("/login");
-      }
-      setIsLoading(false);
-    }, 1000);
+    const { error } = await signUp(email, password);
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success!",
+        description: "Account created! You can now log in.",
+      });
+      navigate("/login");
+    }
+    setIsLoading(false);
   };
 
   return (

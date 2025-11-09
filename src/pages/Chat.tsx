@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Send, Image as ImageIcon, Settings, LogOut } from "lucide-react";
 import ChatMessage from "@/components/ChatMessage";
 import PersonaSelector from "@/components/PersonaSelector";
@@ -20,7 +22,14 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,40 +53,73 @@ const Chat = () => {
     setInputValue("");
     setIsLoading(true);
 
-    // TODO: Implement actual AI integration with Lovable AI
-    // For now, simulate a response
-    setTimeout(() => {
+    try {
+      // Call AI edge function
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: {
+          userMessage: inputValue,
+          persona,
+          tone,
+          history: messages.map(m => ({ role: m.role, content: m.content }))
+        }
+      });
+
+      if (error) throw error;
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `As a ${PERSONAS[persona].label} in a ${tone} tone: I've received your message. This is a placeholder response. Connect Lovable Cloud to enable AI responses.`,
+        content: data.response,
         timestamp: new Date(),
         persona,
         tone,
       };
 
-      // Add disclaimer if persona requires it
-      if (PERSONAS[persona].disclaimer) {
-        assistantMessage.content += `\n\n⚠️ ${PERSONAS[persona].disclaimer}`;
-      }
-
       setMessages((prev) => [...prev, assistantMessage]);
+      
+      // Save messages to database
+      if (user) {
+        await supabase.from('messages').insert([
+          {
+            user_id: user.id,
+            role: userMessage.role,
+            content: userMessage.content,
+            persona,
+            tone
+          },
+          {
+            user_id: user.id,
+            role: assistantMessage.role,
+            content: assistantMessage.content,
+            persona,
+            tone
+          }
+        ]);
+      }
+    } catch (error: any) {
+      console.error('Error calling AI:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to get AI response. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // TODO: Implement OCR integration
     toast({
       title: "OCR Feature",
-      description: "Image uploaded. OCR integration will be added with Lovable Cloud.",
+      description: "Image OCR feature will be implemented in the next update.",
     });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     toast({
       title: "Logged out",
       description: "You've been successfully logged out.",
@@ -85,9 +127,12 @@ const Chat = () => {
     navigate("/");
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-lg bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -109,9 +154,7 @@ const Chat = () => {
         </div>
       </header>
 
-      {/* Main Chat Area */}
       <div className="flex-1 container mx-auto px-4 py-6 flex gap-6">
-        {/* Sidebar */}
         <aside className="w-64 space-y-4 hidden lg:block">
           <Card className="p-4 bg-card/50 backdrop-blur-sm border-border/50">
             <PersonaSelector value={persona} onChange={setPersona} />
@@ -121,16 +164,13 @@ const Chat = () => {
           </Card>
         </aside>
 
-        {/* Chat Messages */}
         <div className="flex-1 flex flex-col">
           <Card className="flex-1 bg-card/50 backdrop-blur-sm border-border/50 flex flex-col">
-            {/* Mobile Selectors */}
             <div className="lg:hidden p-4 border-b border-border/50 grid grid-cols-2 gap-4">
               <PersonaSelector value={persona} onChange={setPersona} />
               <ToneSelector value={tone} onChange={setTone} />
             </div>
 
-            {/* Messages Container */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
                 <div className="h-full flex items-center justify-center text-center">
@@ -150,7 +190,6 @@ const Chat = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
             <div className="p-4 border-t border-border/50">
               <div className="flex gap-2">
                 <input

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const Login = () => {
@@ -13,29 +14,28 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // TODO: Implement actual authentication with Lovable Cloud
-    // For now, simulate login
-    setTimeout(() => {
-      if (email && password) {
-        toast({
-          title: "Welcome back!",
-          description: "You've successfully logged in.",
-        });
-        navigate("/chat");
-      } else {
-        toast({
-          title: "Error",
-          description: "Please enter valid credentials.",
-          variant: "destructive",
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Welcome back!",
+        description: "You've successfully logged in.",
+      });
+      navigate("/chat");
+    }
+    setIsLoading(false);
   };
 
   return (
