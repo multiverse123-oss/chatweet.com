@@ -1,5 +1,8 @@
 import "https://deno.land/std@0.168.0/http/server.ts";
 
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -71,7 +74,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { userMessage, persona = 'general', tone = 'neutral', history = [] } = await req.json();
+    const { userMessage, persona = 'general', tone = 'neutral', history = [], model = 'gemini' } = await req.json();
     
     if (!userMessage) {
       return new Response(
@@ -80,7 +83,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       console.error('LOVABLE_API_KEY not found');
       return new Response(
@@ -109,23 +111,41 @@ Deno.serve(async (req) => {
       { role: "user", content: userMessage }
     ];
 
-    console.log('Calling Lovable AI with model: google/gemini-2.5-flash');
-    console.log('Persona:', persona, 'Tone:', tone);
+    console.log('Model:', model, 'Persona:', persona, 'Tone:', tone);
 
-    // Call Lovable AI Gateway
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages,
-        temperature: 0.8,
-        max_tokens: 1000,
-      }),
-    });
+    let response;
+    
+    // Route to appropriate model
+    if (model === 'gpt4omini' && OPENAI_API_KEY) {
+      console.log('Using GPT-4o Mini');
+      response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages,
+          max_tokens: 1000,
+        }),
+      });
+    } else {
+      console.log('Using Gemini 2.5 Flash');
+      response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages,
+          temperature: 0.8,
+          max_tokens: 1000,
+        }),
+      });
+    }
 
     if (!response.ok) {
       if (response.status === 429) {

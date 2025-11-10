@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, MessageSquare, Shield, Zap } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import logo from "@/assets/logo.png";
+import Footer from "@/components/Footer";
 
 const Landing = () => {
   return (
@@ -106,25 +107,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 mt-20">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <img src={logo} alt="ChatWeet" className="w-8 h-8" />
-              <span className="text-sm text-muted-foreground">
-                © 2025 ChatWeet. All rights reserved.
-              </span>
-            </div>
-            <Link 
-              to="/signup" 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              New user? Create account
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

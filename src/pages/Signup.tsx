@@ -15,7 +15,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signUp } = useAuth();
+  const { signUp, signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,22 +31,44 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    const { error } = await signUp(email, password);
-    
-    if (error) {
+    try {
+      // Sign up the user
+      const { error: signUpError } = await signUp(email, password);
+      
+      if (signUpError) {
+        toast({
+          title: "Error",
+          description: signUpError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Auto-login after successful signup
+      const { error: signInError } = await signIn(email, password);
+      
+      if (signInError) {
+        toast({
+          title: "Account Created",
+          description: "Please log in with your credentials.",
+        });
+        navigate("/login");
+      } else {
+        toast({
+          title: "Welcome!",
+          description: "Your account has been created successfully.",
+        });
+        navigate("/chat");
+      }
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message,
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Success!",
-        description: "Account created! You can now log in.",
-      });
-      navigate("/login");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

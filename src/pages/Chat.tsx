@@ -19,6 +19,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [persona, setPersona] = useState<Persona>("general");
   const [tone, setTone] = useState<Tone>("neutral");
+  const [selectedModel, setSelectedModel] = useState<'gemini' | 'gpt4omini'>('gemini');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -60,6 +61,7 @@ const Chat = () => {
           userMessage: inputValue,
           persona,
           tone,
+          model: selectedModel,
           history: messages.map(m => ({ role: m.role, content: m.content }))
         }
       });
@@ -190,7 +192,23 @@ const Chat = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t border-border/50">
+            <div className="p-4 border-t border-border/50 space-y-3">
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant={selectedModel === 'gemini' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedModel('gemini')}
+                >
+                  Gemini 2.5 Flash
+                </Button>
+                <Button
+                  variant={selectedModel === 'gpt4omini' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedModel('gpt4omini')}
+                >
+                  GPT-4o Mini
+                </Button>
+              </div>
               <div className="flex gap-2">
                 <input
                   ref={fileInputRef}
