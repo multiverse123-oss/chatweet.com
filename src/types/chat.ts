@@ -28,6 +28,31 @@ export interface Message {
   timestamp: Date;
   persona?: Persona;
   tone?: Tone;
+  imageUrl?: string;
+  isBookmarked?: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
+
+export interface Bookmark {
+  id: string;
+  message_id: string;
+  created_at: string;
+}
+
+export interface KnowledgeItem {
+  id: string;
+  title: string;
+  content: string;
+  tags?: string[];
+  created_at: string;
+  updated_at: string;
 }
 
 export const PERSONAS: Record<Persona, { label: string; icon: string; disclaimer?: string }> = {
