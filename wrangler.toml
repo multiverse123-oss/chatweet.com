@@ -4,10 +4,5 @@ compatibility_date = "2024-01-01"
 [build]
 command = "npm install && npm run build"
 
-[build.upload]
-format = "service-worker"
-dir = "dist"
-
-[[build.upload.rules]]
-type = "ESModule"
-globs = ["**/*.js"]
+[assets]
+directory = "./dist"
