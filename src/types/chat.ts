@@ -10,7 +10,15 @@ export type Persona =
   | "financial-adviser"
   | "civil-engineer"
   | "software-engineer"
-  | "navy-officer";
+  | "navy-officer"
+  | "teacher"
+  | "chef"
+  | "fitness-trainer"
+  | "therapist"
+  | "real-estate-agent"
+  | "marketing-expert"
+  | "data-scientist"
+  | "architect";
 
 export type Tone = 
   | "neutral"
@@ -88,6 +96,18 @@ export const PERSONAS: Record<Persona, { label: string; icon: string; disclaimer
   "civil-engineer": { label: "Civil Engineer", icon: "🏗️" },
   "software-engineer": { label: "Software Engineer", icon: "💻" },
   "navy-officer": { label: "Navy Officer", icon: "⚓" },
+  teacher: { label: "Teacher", icon: "👨‍🏫" },
+  chef: { label: "Chef", icon: "👨‍🍳" },
+  "fitness-trainer": { label: "Fitness Trainer", icon: "💪" },
+  therapist: { 
+    label: "Therapist", 
+    icon: "🧠",
+    disclaimer: "This is for informational purposes only and not a substitute for professional mental health services."
+  },
+  "real-estate-agent": { label: "Real Estate Agent", icon: "🏡" },
+  "marketing-expert": { label: "Marketing Expert", icon: "📊" },
+  "data-scientist": { label: "Data Scientist", icon: "📈" },
+  architect: { label: "Architect", icon: "📐" },
 };
 
 export const TONES: Record<Tone, { label: string; icon: string }> = {

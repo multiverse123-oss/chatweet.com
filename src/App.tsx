@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import Chat from "./pages/Chat";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Referral from "./pages/Referral";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/referral" element={<Referral />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

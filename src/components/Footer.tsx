@@ -74,8 +74,8 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/signup"
-                  className="text-sm text-primary hover:underline transition-colors"
+                  to="/referral"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Support
                 </Link>

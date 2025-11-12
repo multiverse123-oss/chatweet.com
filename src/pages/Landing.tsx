@@ -64,9 +64,11 @@ const Landing = () => {
                   Get Started Free
                 </Button>
               </Link>
-              <Button variant="glass" size="lg" className="text-lg px-8 py-6">
-                Learn More
-              </Button>
+              <Link to="/referral">
+                <Button variant="glass" size="lg" className="text-lg px-8 py-6">
+                  Request Account
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
