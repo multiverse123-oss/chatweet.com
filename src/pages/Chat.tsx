@@ -455,23 +455,26 @@ const Chat = () => {
             </div>
 
             <div className="p-4 border-t border-border/50 space-y-3">
-              <div className="flex gap-2 justify-end">
-                <Button
-                  variant={selectedModel === 'gemini' ? 'default' : 'outline'}
-                  size="sm"
-                  className="text-xs px-2 h-7"
-                  onClick={() => setSelectedModel('gemini')}
-                >
-                  Gemini 2.5
-                </Button>
-                <Button
-                  variant={selectedModel === 'gpt4omini' ? 'default' : 'outline'}
-                  size="sm"
-                  className="text-xs px-2 h-7"
-                  onClick={() => setSelectedModel('gpt4omini')}
-                >
-                  GPT-4o Mini
-                </Button>
+              <div className="flex flex-col gap-2">
+                <span className="text-xs text-muted-foreground">Switch Models</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={selectedModel === 'gemini' ? 'default' : 'outline'}
+                    size="sm"
+                    className="text-xs px-3 h-8"
+                    onClick={() => setSelectedModel('gemini')}
+                  >
+                    Gemini 2.5
+                  </Button>
+                  <Button
+                    variant={selectedModel === 'gpt4omini' ? 'default' : 'outline'}
+                    size="sm"
+                    className="text-xs px-3 h-8"
+                    onClick={() => setSelectedModel('gpt4omini')}
+                  >
+                    GPT-4o Mini
+                  </Button>
+                </div>
               </div>
               <div className="flex gap-2">
                 <input
