@@ -18,7 +18,19 @@ export type Persona =
   | "real-estate-agent"
   | "marketing-expert"
   | "data-scientist"
-  | "architect";
+  | "architect"
+  | "love"
+  | "introduction"
+  | "online-banking"
+  | "oil-company"
+  | "male"
+  | "female"
+  | "femo"
+  | "getting-to-know"
+  | "romance"
+  | "dating"
+  | "blackmailing"
+  | "customer-service";
 
 export type Tone = 
   | "neutral"
@@ -108,6 +120,18 @@ export const PERSONAS: Record<Persona, { label: string; icon: string; disclaimer
   "marketing-expert": { label: "Marketing Expert", icon: "📊" },
   "data-scientist": { label: "Data Scientist", icon: "📈" },
   architect: { label: "Architect", icon: "📐" },
+  love: { label: "Love", icon: "💕" },
+  introduction: { label: "Introduction", icon: "👋" },
+  "online-banking": { label: "Online Banking", icon: "🏦" },
+  "oil-company": { label: "Oil Company", icon: "🛢️" },
+  male: { label: "Male", icon: "👨" },
+  female: { label: "Female", icon: "👩" },
+  femo: { label: "Femo", icon: "🌟" },
+  "getting-to-know": { label: "Getting to Know Each Other", icon: "🤝" },
+  romance: { label: "Romance", icon: "💖" },
+  dating: { label: "Dating", icon: "💑" },
+  blackmailing: { label: "Blackmailing", icon: "🎭" },
+  "customer-service": { label: "Customer Service", icon: "📞" },
 };
 
 export const TONES: Record<Tone, { label: string; icon: string }> = {

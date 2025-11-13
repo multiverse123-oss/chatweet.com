@@ -10,15 +10,14 @@ const Referral = () => {
   const [showWhatsApp, setShowWhatsApp] = useState(false);
 
   const whatsappNumbers = [
-    { number: "09166139051", display: "+234 916 613 9051" },
-    { number: "08062990923", display: "+234 806 299 0923" },
-    { number: "09035095982", display: "+234 903 509 5982" },
+    { number: "2349166139051", display: "+234 916 613 9051" },
+    { number: "2348062990923", display: "+234 806 299 0923" },
+    { number: "2349035095982", display: "+234 903 509 5982" },
   ];
 
   const handleWhatsAppClick = (number: string) => {
-    const cleanNumber = number.replace(/\D/g, '');
     const message = encodeURIComponent("Hello, I would like to request an account for ChatWeet.");
-    window.open(`https://wa.me/${cleanNumber}?text=${message}`, '_blank');
+    window.open(`https://wa.me/${number}?text=${message}`, '_blank');
   };
 
   return (
