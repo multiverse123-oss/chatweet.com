@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
 
     // Try primary model: instruct-pix2pix
     let response = await fetch(
-      'https://api-inference.huggingface.co/models/timbrooks/instruct-pix2pix',
+      'https://router.huggingface.co/hf-inference/models/timbrooks/instruct-pix2pix',
       {
         method: 'POST',
         headers: {
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     if (!response.ok) {
       console.log('Primary model failed, trying fallback...');
       response = await fetch(
-        'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
+        'https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0',
         {
           method: 'POST',
           headers: {
