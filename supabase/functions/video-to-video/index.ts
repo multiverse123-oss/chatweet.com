@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
 
     // Try video generation model
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/damo-vilab/text-to-video-ms-1.7b',
+      'https://router.huggingface.co/hf-inference/models/damo-vilab/text-to-video-ms-1.7b',
       {
         method: 'POST',
         headers: {

@@ -30,7 +30,8 @@ export type Persona =
   | "romance"
   | "dating"
   | "blackmailing"
-  | "customer-service";
+  | "customer-service"
+  | "investment";
 
 export type Tone = 
   | "neutral"
@@ -132,6 +133,7 @@ export const PERSONAS: Record<Persona, { label: string; icon: string; disclaimer
   dating: { label: "Dating", icon: "💑" },
   blackmailing: { label: "Blackmailing", icon: "🎭" },
   "customer-service": { label: "Customer Service", icon: "📞" },
+  investment: { label: "Investment", icon: "💼" },
 };
 
 export const TONES: Record<Tone, { label: string; icon: string }> = {
