@@ -15,7 +15,8 @@ import {
   Brain, 
   User, 
   Camera,
-  Menu
+  Menu,
+  Video
 } from "lucide-react";
 import ChatMessage from "@/components/ChatMessage";
 import ChatHistory from "@/components/ChatHistory";
@@ -24,12 +25,13 @@ import KnowledgeBase from "@/components/KnowledgeBase";
 import UserProfile from "@/components/UserProfile";
 import PersonaSelector from "@/components/PersonaSelector";
 import ToneSelector from "@/components/ToneSelector";
+import MediaProcessor from "@/components/MediaProcessor";
 import { Message, Persona, Tone } from "@/types/chat";
 import { takeScreenshot } from "@/utils/screenshot";
 import logo from "@/assets/logo.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-type SidebarView = 'history' | 'bookmarks' | 'knowledge' | 'profile';
+type SidebarView = 'history' | 'bookmarks' | 'knowledge' | 'profile' | 'media';
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -299,6 +301,8 @@ const Chat = () => {
         return <KnowledgeBase userId={user.id} />;
       case 'profile':
         return <UserProfile userId={user.id} email={user.email || ''} />;
+      case 'media':
+        return <MediaProcessor />;
     }
   };
 
@@ -336,6 +340,13 @@ const Chat = () => {
                       onClick={() => setSidebarView('knowledge')}
                     >
                       <Brain className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={sidebarView === 'media' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSidebarView('media')}
+                    >
+                      <Video className="w-4 h-4" />
                     </Button>
                     <Button
                       variant={sidebarView === 'profile' ? 'default' : 'ghost'}
@@ -406,6 +417,17 @@ const Chat = () => {
               <Brain className="w-4 h-4 mr-2" />
               Knowledge
             </Button>
+            <Button
+              variant={sidebarView === 'media' ? 'default' : 'ghost'}
+              size="sm"
+              className="flex-1"
+              onClick={() => setSidebarView('media')}
+            >
+              <Video className="w-4 h-4 mr-2" />
+              Media
+            </Button>
+          </Card>
+          <Card className="p-2 bg-card/50 backdrop-blur-sm border-border/50 flex gap-2">
             <Button
               variant={sidebarView === 'profile' ? 'default' : 'ghost'}
               size="sm"
