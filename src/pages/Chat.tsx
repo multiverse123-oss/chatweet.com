@@ -26,12 +26,14 @@ import UserProfile from "@/components/UserProfile";
 import PersonaSelector from "@/components/PersonaSelector";
 import ToneSelector from "@/components/ToneSelector";
 import MediaProcessor from "@/components/MediaProcessor";
+import { ScreenRecorder } from "@/components/ScreenRecorder";
+import { SocialMediaBot } from "@/components/SocialMediaBot";
 import { Message, Persona, Tone } from "@/types/chat";
 import { takeScreenshot } from "@/utils/screenshot";
 import logo from "@/assets/logo.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-type SidebarView = 'history' | 'bookmarks' | 'knowledge' | 'profile' | 'media';
+type SidebarView = 'history' | 'bookmarks' | 'knowledge' | 'profile' | 'media' | 'recorder';
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -303,6 +305,13 @@ const Chat = () => {
         return <UserProfile userId={user.id} email={user.email || ''} />;
       case 'media':
         return <MediaProcessor />;
+      case 'recorder':
+        return (
+          <div className="space-y-4">
+            <ScreenRecorder />
+            <SocialMediaBot />
+          </div>
+        );
     }
   };
 
@@ -347,6 +356,13 @@ const Chat = () => {
                       onClick={() => setSidebarView('media')}
                     >
                       <Video className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={sidebarView === 'recorder' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSidebarView('recorder')}
+                    >
+                      <Camera className="w-4 h-4" />
                     </Button>
                     <Button
                       variant={sidebarView === 'profile' ? 'default' : 'ghost'}
@@ -425,6 +441,15 @@ const Chat = () => {
             >
               <Video className="w-4 h-4 mr-2" />
               Media
+            </Button>
+            <Button
+              variant={sidebarView === 'recorder' ? 'default' : 'ghost'}
+              size="sm"
+              className="flex-1"
+              onClick={() => setSidebarView('recorder')}
+            >
+              <Camera className="w-4 h-4 mr-2" />
+              Recorder
             </Button>
           </Card>
           <Card className="p-2 bg-card/50 backdrop-blur-sm border-border/50 flex gap-2">
