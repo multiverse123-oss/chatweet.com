@@ -1,1 +1,22 @@
 project_id = "utkbzgfaifcrhrqdzpeo"
+
+[functions.chat-ai]
+verify_jwt = false
+
+[functions.chat-ocr]
+verify_jwt = false
+
+[functions.image-to-image]
+verify_jwt = false
+
+[functions.video-to-video]
+verify_jwt = false
+
+[functions.voice-changer]
+verify_jwt = false
+
+[functions.vision-analyze]
+verify_jwt = false
+
+[functions.session-manager]
+verify_jwt = false
