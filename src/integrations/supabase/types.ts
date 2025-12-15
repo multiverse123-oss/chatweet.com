@@ -97,6 +97,33 @@ export type Database = {
         }
         Relationships: []
       }
+      login_history: {
+        Row: {
+          action: string
+          device_id: string
+          id: string
+          ip_address: string | null
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          device_id: string
+          id?: string
+          ip_address?: string | null
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          device_id?: string
+          id?: string
+          ip_address?: string | null
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -159,6 +186,45 @@ export type Database = {
           default_tone?: string | null
           email?: string
           id?: string
+        }
+        Relationships: []
+      }
+      user_sessions: {
+        Row: {
+          created_at: string
+          device_id: string
+          expires_at: string
+          id: string
+          ip_address: string | null
+          is_active: boolean | null
+          last_activity: string
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          last_activity?: string
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          last_activity?: string
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
