@@ -6,11 +6,21 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Image as ImageIcon, Video, Mic, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const IMAGE_MODELS = [
+  { id: 'instruct-pix2pix', name: 'Instruct Pix2Pix', description: 'Edit images with text instructions' },
+  { id: 'sdxl-refiner', name: 'SDXL Refiner', description: 'Refine and enhance images' },
+  { id: 'flux-kontext', name: 'FLUX Kontext', description: 'Creative image transformations' },
+  { id: 'aura-sr', name: 'Aura SR v2', description: 'Super resolution upscaling' },
+  { id: 'flux-schnell', name: 'FLUX Schnell', description: 'Fast image generation' },
+];
 
 const MediaProcessor = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedMedia, setProcessedMedia] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");
+  const [selectedModel, setSelectedModel] = useState("instruct-pix2pix");
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
@@ -18,42 +28,62 @@ const MediaProcessor = () => {
 
   const handleImageToImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !prompt) {
+    if (!file) {
       toast({
         title: "Missing input",
-        description: "Please provide both an image and a prompt",
+        description: "Please select an image",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!prompt && selectedModel !== 'aura-sr') {
+      toast({
+        title: "Missing prompt",
+        description: "Please provide a prompt describing the transformation",
         variant: "destructive",
       });
       return;
     }
 
     setIsProcessing(true);
+    setProcessedMedia(null);
+    
     try {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64Image = reader.result as string;
         
         const { data, error } = await supabase.functions.invoke('image-to-image', {
-          body: { image: base64Image, prompt }
+          body: { image: base64Image, prompt, model: selectedModel }
         });
 
         if (error) throw error;
+        
+        if (data.loading) {
+          toast({
+            title: "Model Loading",
+            description: "The model is warming up. Please try again in 20-30 seconds.",
+          });
+          setIsProcessing(false);
+          return;
+        }
         
         setProcessedMedia(data.image);
         toast({
           title: "Success!",
           description: "Image transformed successfully",
         });
+        setIsProcessing(false);
       };
       reader.readAsDataURL(file);
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: "Failed to process image",
+        description: error instanceof Error ? error.message : "Failed to process image",
         variant: "destructive",
       });
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -156,11 +186,30 @@ const MediaProcessor = () => {
         </TabsList>
 
         <TabsContent value="image" className="space-y-3">
-          <Input
-            placeholder="Describe how to transform the image..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
+          <Select value={selectedModel} onValueChange={setSelectedModel}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select AI Model" />
+            </SelectTrigger>
+            <SelectContent>
+              {IMAGE_MODELS.map((model) => (
+                <SelectItem key={model.id} value={model.id}>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{model.name}</span>
+                    <span className="text-xs text-muted-foreground">{model.description}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
+          {selectedModel !== 'aura-sr' && (
+            <Input
+              placeholder="Describe how to transform the image..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          )}
+          
           <input
             type="file"
             ref={imageInputRef}
@@ -176,12 +225,16 @@ const MediaProcessor = () => {
             {isProcessing ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Processing...
+                Processing with {IMAGE_MODELS.find(m => m.id === selectedModel)?.name}...
               </>
             ) : (
-              "Upload & Transform Image"
+              `Upload & Transform Image`
             )}
           </Button>
+          
+          <p className="text-xs text-muted-foreground text-center">
+            {IMAGE_MODELS.find(m => m.id === selectedModel)?.description}
+          </p>
         </TabsContent>
 
         <TabsContent value="video" className="space-y-3">
