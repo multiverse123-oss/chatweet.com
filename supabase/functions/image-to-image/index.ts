@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
       }
 
       response = await fetch(
-        `https://api-inference.huggingface.co/models/${selectedModel}`,
+        `https://router.huggingface.co/hf-inference/models/${selectedModel}`,
         {
           method: 'POST',
           headers: {
@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
       }
 
       response = await fetch(
-        `https://api-inference.huggingface.co/models/${selectedModel}`,
+        `https://router.huggingface.co/hf-inference/models/${selectedModel}`,
         {
           method: 'POST',
           headers: {
@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
     } else {
       // Text-to-image models (FLUX) - generate based on prompt describing the transformation
       response = await fetch(
-        `https://api-inference.huggingface.co/models/${selectedModel}`,
+        `https://router.huggingface.co/hf-inference/models/${selectedModel}`,
         {
           method: 'POST',
           headers: {
